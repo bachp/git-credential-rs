@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 url = "2.1.0"
 log = "0.4.8"
+snafu = "0.4.4"

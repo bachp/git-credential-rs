@@ -1,18 +1,41 @@
 //! The git_credentials crate provides types that help to implement git-credential helpers.
 //!
 //! The format is documented here: https://git-scm.com/docs/git-credential
+//!
+//! The library is intended to help creating custom git credential helpers.
+//!
+//! See https://git-scm.com/docs/gitcredentials for more information on how to use git credential helpers.
+//!
+//! See https://git-scm.com/docs/api-credentials#_credential_helpers for more details on how to write your own.
 use log::{debug, warn};
 use std::io::{BufRead, BufReader, Read, Write};
 use url::Url;
+
+use snafu::{ResultExt, Snafu};
+
+#[derive(Debug, Snafu)]
+pub enum Error {
+    #[snafu(display("Could not read from reader: {}", source))]
+    ReadError { source: std::io::Error },
+    #[snafu(display("Could not write to writer: {}", source))]
+    WriteError { source: std::io::Error },
+    #[snafu(display("Could not parse the git-credential format: {}", source))]
+    ParseError {
+        value: String,
+        source: url::ParseError,
+    },
+}
+
+type Result<T, E = Error> = std::result::Result<T, E>;
 
 /// Holds the values of all parameters supported by git-credential
 #[derive(Debug)]
 pub struct GitCredential {
     /// The url field is treated specially by git-credential.
-    /// Setting the url coresponds to setting all the other fields as part of the url.
+    /// Setting the url corresponds to setting all the other fields as part of the url.
     ///
     /// The url has the following format: `<protocol>://<username>:<password>@<host>/<path>`.
-    pub url: Option<Url>, // TODO: Use URL type here?
+    pub url: Option<Url>,
     /// The protocol over which the credential will be used (e.g., `https`).
     pub protocol: Option<String>,
     /// The remote hostname for a network credential (e.g., `example.com`).
@@ -52,12 +75,11 @@ impl GitCredential {
     /// assert_eq!(g.username.unwrap(), "me");
     /// assert_eq!(g.password.unwrap(), "%sec&ret!");
     /// ```
-    pub fn from_reader(source: impl Read) -> Result<GitCredential, ()> {
-        //TODO: Implement error
+    pub fn from_reader(source: impl Read) -> Result<GitCredential> {
         let mut gc = GitCredential::default();
         let source = BufReader::new(source);
         for line in source.lines() {
-            let line = line.unwrap();
+            let line = line.context(ReadError {})?;
             if line.is_empty() {
                 // An empty line means we are done
                 // TODO: Make sure an empty line exists in the end
@@ -71,7 +93,7 @@ impl GitCredential {
                     match key {
                         "url" => {
                             gc.url = {
-                                let value = Url::parse(&value).unwrap();
+                                let value = Url::parse(&value).context(ParseError { value })?;
                                 Some(value)
                             }
                         }
@@ -104,30 +126,30 @@ impl GitCredential {
     ///
     /// assert_eq!("username=me\npassword=%sec&ret!\n\n", String::from_utf8(v).unwrap());
     /// ```
-    pub fn to_writer(&self, mut sink: impl Write) -> Result<(), ()> {
+    pub fn to_writer(&self, mut sink: impl Write) -> Result<()> {
         // The url filed is written first, this allows the other fields to override
         // parts of the url
         if let Some(url) = &self.url {
-            writeln!(sink, "url={}", url).unwrap();
+            writeln!(sink, "url={}", url).context(WriteError)?;
         }
         if let Some(protocol) = &self.protocol {
-            writeln!(sink, "protocol={}", protocol).unwrap();
+            writeln!(sink, "protocol={}", protocol).context(WriteError)?;
         }
         if let Some(host) = &self.host {
-            writeln!(sink, "host={}", host).unwrap();
+            writeln!(sink, "host={}", host).context(WriteError)?;
         }
         if let Some(path) = &self.path {
-            writeln!(sink, "path={}", path).unwrap();
+            writeln!(sink, "path={}", path).context(WriteError)?;
         }
         if let Some(username) = &self.username {
-            writeln!(sink, "username={}", username).unwrap();
+            writeln!(sink, "username={}", username).context(WriteError)?;
         }
         if let Some(password) = &self.password {
-            writeln!(sink, "password={}", password).unwrap();
+            writeln!(sink, "password={}", password).context(WriteError)?;
         }
 
         // One empty line in the end
-        writeln!(sink).unwrap();
+        writeln!(sink).context(WriteError)?;
         Ok(())
     }
 }

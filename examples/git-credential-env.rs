@@ -1,3 +1,7 @@
+// Copyright 2019 Pascal Bach.
+//
+// SPDX-License-Identifier:	Apache-2.0 or MIT
+
 /// A simple git credential helper that
 /// provides the credentials from the two environment variables
 /// `GIT_USER` and `GIT_PASS`.

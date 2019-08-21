@@ -1,3 +1,7 @@
+// Copyright 2019 Pascal Bach.
+//
+// SPDX-License-Identifier:	Apache-2.0 or MIT
+
 //! The git_credentials crate provides types that help to implement git-credential helpers.
 //!
 //! The format is documented in [git-credential[1] ](https://git-scm.com/docs/git-credential)

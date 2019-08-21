@@ -4,6 +4,8 @@ version = "0.1.0"
 authors = ["Pascal Bach <pascal.bach@nextrem.ch>"]
 edition = "2018"
 license = "MIT/Apache-2.0"
+repository = "https://github.com/bachp/git-credential-rs"
+description = "Provides types that help to implement git-credential helpers."
 
 [dependencies]
 url = "2.1.0"

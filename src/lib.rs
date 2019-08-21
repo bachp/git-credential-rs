@@ -1,27 +1,39 @@
 //! The git_credentials crate provides types that help to implement git-credential helpers.
 //!
-//! The format is documented here: https://git-scm.com/docs/git-credential
+//! The format is documented in [git-credential[1] ](https://git-scm.com/docs/git-credential)
 //!
 //! The library is intended to help creating custom git credential helpers.
 //!
-//! See https://git-scm.com/docs/gitcredentials for more information on how to use git credential helpers.
+//! See [gitcredentials[7]](https://git-scm.com/docs/gitcredentials) for more information on how to use git credential helpers.
 //!
-//! See https://git-scm.com/docs/api-credentials#_credential_helpers for more details on how to write your own.
+//! See [api-credentials[7]](https://git-scm.com/docs/api-credentials#_credential_helpers) for more details on how to write your own.
 use log::{debug, warn};
 use std::io::{BufRead, BufReader, Read, Write};
 use url::Url;
 
 use snafu::{ResultExt, Snafu};
 
+/// Errors that can occur while reading or writing the git credential format
 #[derive(Debug, Snafu)]
 pub enum Error {
+    /// Indicates that there was an error while reading from the given Reader
     #[snafu(display("Could not read from reader: {}", source))]
-    ReadError { source: std::io::Error },
+    ReadError {
+        /// The underlying io error causing the issue
+        source: std::io::Error,
+    },
+    /// Indicates that there was an error while writing to the given Writer
     #[snafu(display("Could not write to writer: {}", source))]
-    WriteError { source: std::io::Error },
+    WriteError {
+        /// The underlying io error causing the issue
+        source: std::io::Error,
+    },
+    /// Indicates that the format received did not correspond to the one specified in [git-credential[1] ](https://git-scm.com/docs/git-credential).
     #[snafu(display("Could not parse the git-credential format: {}", source))]
     ParseError {
+        /// The value that could not be parsed
         value: String,
+        /// The underlying io error causing the issue
         source: url::ParseError,
     },
 }

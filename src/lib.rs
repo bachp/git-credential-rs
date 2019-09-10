@@ -170,6 +170,9 @@ impl GitCredential {
     }
 }
 
+// Make sure the readme is tested too
+doc_comment::doctest!("../README.md");
+
 #[cfg(test)]
 mod tests {
     use super::{GitCredential, Url};

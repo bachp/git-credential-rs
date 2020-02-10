@@ -8,7 +8,7 @@ repository = "https://github.com/bachp/git-credential-rs"
 description = "Provides types that help to implement git-credential helpers."
 
 [dependencies]
-url = "2.1.0"
+url = "2.1.1"
 log = "0.4.8"
-snafu = "0.6.0"
+snafu = "0.6.2"
 doc-comment = "0.3.1"

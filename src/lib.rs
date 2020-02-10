@@ -104,7 +104,7 @@ impl GitCredential {
             match line.split_terminator('=').collect::<Vec<&str>>().as_slice() {
                 [key, value] => {
                     debug!("Reading line with: {} = {}", key, value);
-                    let value = value.to_string();
+                    let value = (*value).to_string();
                     let key = key.to_owned(); // TODO: Why is this needed?
                     match key {
                         "url" => {

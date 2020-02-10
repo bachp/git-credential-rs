@@ -1,7 +1,7 @@
 # Git Credential
 
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fbachp%2Fgit-credential-rs%2Fbadge%3Fref%3Dmaster&style=flat)](https://actions-badge.atrox.dev/bachp/git-credential-rs/goto?ref=master)
-[![Crate](https://img.shields.io/crates/v/rand.svg)](https://crates.io/crates/git-credential))
+[![Crate](https://img.shields.io/crates/v/git-credential.svg)](https://crates.io/crates/git-credential)
 [![API](https://docs.rs/git-credential/badge.svg)](https://docs.rs/git-credential)
 
 A Rust library that provides types that help to implement git-credential helpers.

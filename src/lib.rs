@@ -171,6 +171,7 @@ impl GitCredential {
 }
 
 // Make sure the readme is tested too
+#[cfg(doctest)]
 doc_comment::doctest!("../README.md");
 
 #[cfg(test)]

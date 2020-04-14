@@ -1,11 +1,12 @@
 [package]
 name = "git-credential"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Pascal Bach <pascal.bach@nextrem.ch>"]
 edition = "2018"
 license = "MIT/Apache-2.0"
 repository = "https://github.com/bachp/git-credential-rs"
 description = "Provides types that help to implement git-credential helpers."
+readme="README.md"
 
 [dependencies]
 url = "2.1.1"

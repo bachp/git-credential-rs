@@ -95,7 +95,7 @@ impl GitCredential {
         let mut gc = GitCredential::default();
         let source = BufReader::new(source);
         for line in source.lines() {
-            let line = line.context(ReadError {})?;
+            let line = line.context(ReadSnafu {})?;
             if line.is_empty() {
                 // An empty line means we are done
                 // TODO: Make sure an empty line exists in the end
@@ -109,7 +109,7 @@ impl GitCredential {
                     match key {
                         "url" => {
                             gc.url = {
-                                let value = Url::parse(&value).context(ParseError { value })?;
+                                let value = Url::parse(&value).context(ParseSnafu { value })?;
                                 Some(value)
                             }
                         }
@@ -146,26 +146,26 @@ impl GitCredential {
         // The url filed is written first, this allows the other fields to override
         // parts of the url
         if let Some(url) = &self.url {
-            writeln!(sink, "url={}", url).context(WriteError)?;
+            writeln!(sink, "url={}", url).context(WriteSnafu)?;
         }
         if let Some(protocol) = &self.protocol {
-            writeln!(sink, "protocol={}", protocol).context(WriteError)?;
+            writeln!(sink, "protocol={}", protocol).context(WriteSnafu)?;
         }
         if let Some(host) = &self.host {
-            writeln!(sink, "host={}", host).context(WriteError)?;
+            writeln!(sink, "host={}", host).context(WriteSnafu)?;
         }
         if let Some(path) = &self.path {
-            writeln!(sink, "path={}", path).context(WriteError)?;
+            writeln!(sink, "path={}", path).context(WriteSnafu)?;
         }
         if let Some(username) = &self.username {
-            writeln!(sink, "username={}", username).context(WriteError)?;
+            writeln!(sink, "username={}", username).context(WriteSnafu)?;
         }
         if let Some(password) = &self.password {
-            writeln!(sink, "password={}", password).context(WriteError)?;
+            writeln!(sink, "password={}", password).context(WriteSnafu)?;
         }
 
         // One empty line in the end
-        writeln!(sink).context(WriteError)?;
+        writeln!(sink).context(WriteSnafu)?;
         Ok(())
     }
 }

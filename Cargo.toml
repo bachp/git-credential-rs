@@ -11,7 +11,7 @@ readme="README.md"
 [dependencies]
 url = "2.1.1"
 log = "0.4.8"
-snafu = "0.6.6"
+snafu = "0.7"
 
 [dev-dependencies]
 doc-comment = "0.3.3"
